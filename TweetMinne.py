@@ -64,8 +64,20 @@ elif vernetypeID == 'FJE':
 	vernetypeTrans = 'er #fjernet'
 elif vernetypeID == 'IKKE':
 	vernetypeTrans = 'er #ikke #fredet'
+elif vernetypeID == 'SAM':
+	vernetypeTrans = 'har #sammensatt #vernestatus'
 else:
 	vernetypeTrans = vernetypeID
 	
+try:
+	bilde = urllib2.urlopen("http://kulturminnebilder.ra.no//fotoweb/cmdrequest/rest/PreviewAgent.fwx?ar=5001&sr=" + str(kulturminneValues['features'][0]['attributes']['LokalitetID']))
+except IOError:
+	bilde = None
+	
 tweet = "#" + tweetNavn + " i #" + tweetKOMM + " kommune " + vernetypeTrans + " (http://www.kulturminnesok.no/ra/lokalitet/" + str(kulturminneValues['features'][0]['attributes']['LokalitetID']) + ")"
-twitter.update_status(status=tweet)
+
+if bilde != None:	
+	twitterbilde = twitter.upload_media(media=bilde)	
+	twitter.update_status(status=tweet, media_ids=[twitterbilde['media_id']])
+else:
+	twitter.update_status(status=tweet)
