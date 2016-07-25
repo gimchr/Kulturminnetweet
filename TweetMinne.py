@@ -18,20 +18,57 @@ while result is None:
 		kulturminne = urllib2.urlopen("http://askeladden_wms.ra.no/arcgis/rest/services/WMS/RA_Askeladden/MapServer/5/query?where=LokalitetID+=+" + str(random.randrange(2900,181200)) + "&text=&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&relationParam=&outFields=*&returnGeometry=true&maxAllowableOffset=&geometryPrecision=&outSR=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&returnDistinctValues=false&f=json")
 		kulturminneValues = json.load(kulturminne)
 		kulturminne.close()
+		KOMMnum = kulturminneValues['features'][0]['attributes']['KOMM']
 		KOMM = str(kulturminneValues['features'][0]['attributes']['KOMM'])
 		break
 	except:
 		pass
 		
-if len(KOMM) == 4:
-	kommunenummer = urllib2.urlopen("http://hotell.difi.no/api/json/ssb/regioner/kommuner?query=" + KOMM)
-else:
-	kommunenummer = urllib2.urlopen("http://hotell.difi.no/api/json/ssb/regioner/kommuner?query=0" + KOMM)
-kommunenummerValues = json.load(kommunenummer)
-kommunenummer.close()
+if KOMMnum >= 2100:
+	KOMMtranslations = { '2101': 'i #Sveagruva arealplanområde',
+	'2102': ' i #Barentsburg arealplanområde',
+	'2104': ' i #Ny-Ålesund arealplanområde',
+	'2105': ' i #Colesbukta arealplanområde',
+	'2106': ' i #Pyramiden arealplanområde',
+	'2107': ' i #Festningen geotopvernområde',
+	'2108': ' i #Ossian Sars naturreservat',
+	'2109': ' i #Moffen naturreservat',
+	'2110': ' på #Midt-Spitsbergen',
+	'2111': ' i #Longyearbyen arealplanområde',
+	'2112': ' i #Sør-Spitsbergen nasjonalpark',
+	'2113': ' i #Nordenskiöld Land nasjonalpark',
+	'2114': ' i #Indre Wijdefjorden nasjonalpark',
+	'2115': ' i #Sassen-Bünsow Land nasjonalpark',
+	'2116': ' i #Nordre Isfjorden nasjonalpark',
+	'2118': ' i #Forlandet nasjonalpark',
+	'2119': ' i #Nordvest-Spitsbergen Nasjonalpark',
+	'2121': ' på #Bjørnøya',
+	'2131': ' på #Hopen',
+	'2132': ' i #Søraust-Svalbard naturreservat',
+	'2133': ' i #Kong Karls Land',
+	'2134': ' på #Nordaustlandet',
+	'2135': ' på #Kvitøya',
+	'2211': ' i #Sjøterritoriet til Jan Mayen',
+	'2303': ' i #Smutthavet',
+	'2304': ' i #Fiskerisonen rundt Jan Mayen',
+	'2305': ' i #Fiskevernsonen rundt Svalbard',
+	'2311': ' på #sokkelen sør for 62gr N',
+	'2321': ' på #sokkelen nord for 62gr N'
+	}
+	tweetKOMM = KOMMtranslations[KOMM].decode('utf-8')
+else:	
+	if len(KOMM) == 4:
+		kommunenummer = urllib2.urlopen("http://hotell.difi.no/api/json/ssb/regioner/kommuner?query=" + KOMM)
+		kommunenummerValues = json.load(kommunenummer)
+		kommunenummer.close()
+		tweetKOMM = ' i #' + kommunenummerValues['entries'][0]['tittel'] + ' kommune'
+	else:
+		kommunenummer = urllib2.urlopen("http://hotell.difi.no/api/json/ssb/regioner/kommuner?query=0" + KOMM)
+		kommunenummerValues = json.load(kommunenummer)
+		kommunenummer.close()
+		tweetKOMM = ' i #' + kommunenummerValues['entries'][0]['tittel'] + ' kommune'
 
 tweetNavn = kulturminneValues['features'][0]['attributes']['Navn']
-tweetKOMM = kommunenummerValues['entries'][0]['tittel']
 vernetypeID = kulturminneValues['features'][0]['attributes']['VernetypeID']
 
 translations = { 'AUT': 'er #automatisk #fredet',
