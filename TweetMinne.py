@@ -34,41 +34,29 @@ tweetNavn = kulturminneValues['features'][0]['attributes']['Navn']
 tweetKOMM = kommunenummerValues['entries'][0]['tittel']
 vernetypeID = kulturminneValues['features'][0]['attributes']['VernetypeID']
 
-if vernetypeID == 'AUT':
-	vernetypeTrans = 'er #automatisk #fredet'
-elif vernetypeID == 'VED':
-	vernetypeTrans = 'er #vedtaksfredet'	
-elif vernetypeID == 'FOR':
-	vernetypeTrans = 'er #forskriftsfredet'
-elif vernetypeID == 'FRE':
-	vernetypeTrans = 'er #fredet'
-elif vernetypeID == 'MID':
-	vernetypeTrans = 'er #midlertidig #fredet'
-elif vernetypeID == 'FPG':
-	vernetypeTrans = 'er under #fredning'
-elif vernetypeID == 'PBL':
-	vernetypeTrans = 'er #vernet etter #PBL'
-elif vernetypeID == 'KMV':
-	vernetypeTrans = 'er #kommunalt #verneverdig'
-elif vernetypeID == 'LIST':
-	vernetypeTrans = 'er en #listeført #kirke'
-elif vernetypeID == 'STAT':
-	vernetypeTrans = 'er #statlig #listeført'
-elif vernetypeID == 'KOM':
-	vernetypeTrans = 'er #kommunalt #listeført'
-elif vernetypeID == 'UAV':
-	vernetypeTrans = 'har #uavklart #vernestatus'
-elif vernetypeID == 'OPP':
-	vernetypeTrans = 'er en #opphevet #fredning'
-elif vernetypeID == 'FJE':
-	vernetypeTrans = 'er #fjernet'
-elif vernetypeID == 'IKKE':
-	vernetypeTrans = 'er #ikke #fredet'
-elif vernetypeID == 'SAM':
-	vernetypeTrans = 'har #sammensatt #vernestatus'
-else:
+translations = { 'AUT': 'er #automatisk #fredet',
+'VED': 'er #vedtaksfredet',
+'FOR': 'er #forskriftsfredet',
+'FRE': 'er #fredet',
+'MID': 'er #midlertidig #fredet',
+'FPG': 'er under #fredning',
+'PBL': 'er #vernet etter #PBL',
+'KMV': 'er #kommunalt #verneverdig',
+'LIST': 'er en #listeført #kirke',
+'STAT': 'er #statlig #listeført',
+'KOM': 'er #kommunalt #listeført',
+'UAV': 'har #uavklart #vernestatus',
+'OPP': 'er en #opphevet #fredning',
+'FJE': 'er #fjernet',
+'IKKE': 'er #ikke #fredet',
+'SAM': 'har #sammensatt #vernestatus'
+}
+
+try:
+	vernetypeTrans = translations[vernetypeID]
+except:
 	vernetypeTrans = vernetypeID
-	
+
 try:
 	bilde = urllib2.urlopen("http://kulturminnebilder.ra.no//fotoweb/cmdrequest/rest/PreviewAgent.fwx?ar=5001&sr=" + str(kulturminneValues['features'][0]['attributes']['LokalitetID']))
 except IOError:
